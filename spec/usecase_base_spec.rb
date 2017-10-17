@@ -92,8 +92,7 @@ describe UseCase::Base do
       UseCaseApp = Class.new(UseCase::Base) do
         required_params :name
       end
-
-      expect{UseCaseApp.perform}.to raise_exception("name is not a context parameter")
+      expect{UseCaseApp.perform}.to raise_error(ArgumentError,"name is not a context parameter")
     end
 
     it 'receives a hash and return it' do
