@@ -76,13 +76,13 @@ module UseCase
         if context.to_hash.keys.include? param
           instance_variable_set("@#{param}", @context.send(param))
         else
-          raise ArgumentError.new("#{param} is not a context parameter")
+          raise UseCase::MissingRequiredParameterError.new(param)
         end
       end
     end
 
     def optional_params
-      self.class.required_params.each do |param|
+      self.class.optional_params.each do |param|
         instance_variable_set("@#{param}", @context.send(param))
       end
     end
