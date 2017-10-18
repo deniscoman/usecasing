@@ -8,7 +8,11 @@ module UseCase
 
     module ClassMethods
       def required_params(*params)
-        @parameters ||= ((superclass.required_params.dup if superclass.respond_to?(:required_params)) || []).push(*params)
+        @required_parameters ||= ((superclass.required_params.dup if superclass.respond_to?(:required_params)) || []).push(*params)
+      end
+
+      def optional_params(*params)
+        @optional_parameters ||= ((superclass.optional_params.dup if superclass.respond_to?(:optional_params)) || []).push(*params)
       end
 
       def depends(*deps)
@@ -27,6 +31,7 @@ module UseCase
           instance = usecase.new(context)
           instance.tap do | me |
             me.required_params
+            me.optional_params
             me.before
             me.perform
           end
@@ -73,6 +78,12 @@ module UseCase
         else
           raise ArgumentError.new("#{param} is not a context parameter")
         end
+      end
+    end
+
+    def optional_params
+      self.class.required_params.each do |param|
+        instance_variable_set("@#{param}", @context.send(param))
       end
     end
 

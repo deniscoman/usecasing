@@ -63,6 +63,29 @@ describe UseCase::Base do
     end
   end
 
+  context 'optional_params' do
+    it 'initializes without any parameters' do
+      AppUseCaseInitialize = Class.new(UseCase::Base)
+      expect(AppUseCaseInitialize.optional_params).to be_empty
+    end
+
+    it 'adds one optional parameter to usecase' do
+      AppUseCase = Class.new(UseCase::Base) do
+        optional_params :param
+      end
+
+      expect(AppUseCase.optional_params.count).to eq 1
+    end
+
+    it 'includes params from the superclasses' do
+      AppUseCase = Class.new(UseCase::Base) do
+        optional_params :param
+      end
+      UseCaseSubClass = Class.new(AppUseCase)
+      expect(UseCaseSubClass.optional_params).to eql([:param])
+    end
+  end
+
   context '##perform' do
 
     it 'call instance #perform method' do
